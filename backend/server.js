@@ -1,12 +1,15 @@
 const connection = require("./config/DbConnections");
 const cloudinary = require("cloudinary");
-const express = require("express");
-const app = express();
+const app = require("./app");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+connection.connect((err) => {
+  if (err) throw err;
+  console.log("Connected to MySQL Server!");
 });
 app.get("/", (req, res) => {
   let data;
@@ -21,7 +24,7 @@ app.get("/", (req, res) => {
   });
 });
 
-const server = app.listen(3000, () => {
+const server = app.listen(process.env.PORT , () => {
   console.log(`Server is working on port http:localhost:${process.env.PORT}`);
 });
 
