@@ -1,7 +1,7 @@
 const connection = require("./config/DbConnections");
 const cloudinary = require("cloudinary");
 const app = require("./app");
-
+const {registration} = require("./controller/ClientController")
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -11,6 +11,7 @@ connection.connect((err) => {
   if (err) throw err;
   console.log("Connected to MySQL Server!");
 });
+app.post("/",registration)
 app.get("/", (req, res) => {
   let data;
   connection.query("SELECT * from Buyer ", (err, rows) => {
