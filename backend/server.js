@@ -12,18 +12,7 @@ connection.connect((err) => {
   console.log("Connected to MySQL Server!");
 });
 app.post("/",registration)
-app.get("/", (req, res) => {
-  let data;
-  connection.query("SELECT * from Buyer ", (err, rows) => {
-    if (err) throw err;
-    data = rows;
-    res.status(200).json({
-      success: true,
-      data,
-    });
-    console.log("The data from users table are: \n", rows);
-  });
-});
+
 
 const server = app.listen(process.env.PORT , () => {
   console.log(`Server is working on port http:localhost:${process.env.PORT}`);

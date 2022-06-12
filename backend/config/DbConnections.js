@@ -5,6 +5,7 @@ const connection = mysql.createConnection({
   user: "root",
   password: "12345678",
   database: "RealEstate",
+  multipleStatements: true
 });
 
 
