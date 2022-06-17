@@ -1,21 +1,22 @@
+// const retirevetoken = require("../utils/jwtToken");
+// const sendEmail = require("../utils/sendEmail");
+// const crypto = require("crypto");
+// const cloudinary = require("cloudinary");
+// const { REFUSED } = require("dns");
+// const { hashSync, genSaltSync, compareSync } = require("bcrypt");
+// const Connection = require("mysql/lib/Connection");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
-const retirevetoken = require("../utils/jwtToken");
-const sendEmail = require("../utils/sendEmail");
-const crypto = require("crypto");
-const cloudinary = require("cloudinary");
+const jwt = require("jsonwebtoken");
 const connection = require("../config/DbConnections");
-const { REFUSED } = require("dns");
-const { hashSync, genSaltSync, compareSync } = require("bcrypt");
-const Connection = require("mysql/lib/Connection");
 
 exports.registration = catchAsyncErrors(async (req, res, next) => {
-  let data = null;
-  const { cnic, firstname, lastname, boughtproperty, watchlist } = req.body;
+  const { cnic, firstname, lastname, boughtproperty, watchlist, password } =
+    req.body;
   console.log(cnic);
   connection.query(
-    `insert into  Buyer (cnic,Buyer_firstname,Buyer_lastname,Buyer_Password,Watchlist,Bought_property) values (${cnic},'${firstname}','${lastname}',${12345678},'${watchlist}','${boughtproperty}');`,
+    `insert into  Buyer (cnic,Buyer_firstname,Buyer_lastname,Buyer_Password,Watchlist,Bought_property) values (${cnic},'${firstname}','${lastname}',${password},'${watchlist}','${boughtproperty}');`,
 
     (err, rows) => {
       if (err) {
@@ -32,10 +33,10 @@ exports.registration = catchAsyncErrors(async (req, res, next) => {
         }
       } else {
         console.log("The data from users table are: \n", rows);
-        data = rows;
+        rows = JSON.parse(JSON.stringify(rows));
         res.status(200).json({
           success: true,
-          data,
+          rows,
         });
       }
     }
@@ -90,19 +91,34 @@ exports.logOut = catchAsyncErrors(async (req, res, next) => {
     message: "Logged Out",
   });
 });
-const jwt = require("jsonwebtoken")
 exports.BuyerProfile = catchAsyncErrors(async (req, res, next) => {
-  // console.log(req.cookies.token);
-  const id = await jwt.decode(req.cookies.token, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
-  });
-  console.log(id);
-  connection.query(`select * from Buyer where cnic = ${id.id}`, (err, row) => {
-    if (err) throw err;
-    row = JSON.parse(JSON.stringify(row));
-    res.status(200).json({
-      sucess: true,
-      row,
+  if (req.cookies.token != null) {
+    const id = await jwt.decode(req.cookies.token, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRE,
     });
-  });
+    console.log(id);
+
+    connection.query(
+      `select * from Buyer where cnic = ${id.id}`,
+      (err, row) => {
+        if (err) {
+          res.status(501).json({
+            success: false,
+            message: "access invalid ",
+          });
+        } else {
+          row = JSON.parse(JSON.stringify(row));
+          res.status(200).json({
+            sucess: true,
+            row,
+          });
+        }
+      }
+    );
+  } else {
+    res.status(400).json({
+      success: false,
+      message: "access invalid ",
+    });
+  }
 });

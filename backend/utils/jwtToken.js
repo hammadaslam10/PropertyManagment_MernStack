@@ -34,7 +34,7 @@ const retirevetoken = (token) => {
   const id = jwt.decode(token, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
-  
+
   return id;
 };
 module.exports = retirevetoken;
