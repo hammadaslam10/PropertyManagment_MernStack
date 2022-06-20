@@ -9,7 +9,7 @@ import NewUser from "./pages/newUser/NewUser";
 import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
-// import Propertylist from "./pages/Property/Propertylist";
+import Propertylist from "./pages/Property/Propertylist";
 
 function App() {
   return (
@@ -30,9 +30,9 @@ function App() {
           <Route path="/newUser">
             <NewUser />
           </Route>
-          {/* <Route path="/property">
+          <Route path="/property">
             <Propertylist />
-          </Route> */}
+          </Route>
           <Route path="/products">
             <ProductList />
           </Route>

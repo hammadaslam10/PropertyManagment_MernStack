@@ -159,3 +159,28 @@ exports.allpropertyofsameseller = catchAsyncErrors(async (req, res, next) => {
     });
   });
 });
+exports.propertydisplay = catchAsyncErrors(async (req, res, next) => {
+  let data;
+  connection.query(
+    `select property.Property_id,concat(seller.seller_firstname,' ',seller.seller_lastname)as Full_name,Bed,price,bath from property,property_detail,Seller;`,
+    (err, row) => {
+      if (err) throw err;
+      data = JSON.parse(JSON.stringify(row));
+      res.status(200).json({
+        success: true,
+        data,
+      });
+    }
+  );
+});
+exports.SellerList = catchAsyncErrors(async (req, res, next) => {
+  let data;
+  connection.query(`select cnic,Selling_id,concat(Seller_firstname,' ',Seller_lastname) as Full_name,Sold_property,Owned_property,Available,Seller_email from Seller;`, (err, row) => {
+    if (err) throw err;
+    data = JSON.parse(JSON.stringify(row));
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  });
+});

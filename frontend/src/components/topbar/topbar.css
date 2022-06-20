@@ -13,12 +13,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: darkblue;
 }
 
 .logo {
   font-weight: bold;
   font-size: 30px;
-  color: darkblue;
+  color: rgb(255, 255, 255);
   cursor: pointer;
 }
 
@@ -31,7 +32,7 @@
   position: relative;
   cursor: pointer;
   margin-right: 10px;
-  color: #555;
+  color: rgb(255, 255, 255);
 }
 
 .topIconBadge{

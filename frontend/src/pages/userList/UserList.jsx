@@ -1,42 +1,89 @@
 import "./userList.css";
 import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
-import { userRows } from "../../dummyData";
+import { productRows } from "../../dummyData";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { buyer } from "../../dummyData";
+import axios from "axios";
+/*** "cnic": "1234567891017",
+            "Selling_id": "abcd1234",
+            "Seller_firstname": "hammad",
+            "Seller_lastname": "aslam",
+            "Seller_email": "hammad@gmail.com",
+            "Seller_password": "12345678",
+            "Sold_property": null,
+            "Owned_property": null,
+            "Available": 0 */
+export default function ProductList() {
+  const [data, setData] = useState([]);
+  // const { client, setting } = useState(buyer);
 
-export default function UserList() {
-  const [data, setData] = useState(userRows);
-
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  useEffect(() => {
+    const getdata = async () => {
+      const { data } = await axios.get("api/v1/sellers");
+      setData(data.data);
+      console.log(data.data);
+      console.log(buyer);
+    };
+    getdata();
+  }, []);
+  const handleDelete = (cnic) => {
+    setData(data.filter((item) => item.cnic !== cnic));
+    console.log(data);
   };
-  
+
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
     {
-      field: "user",
-      headerName: "User",
-      width: 200,
-      renderCell: (params) => {
+      field: "cnic",
+      headerName: "cnic",
+      width: 120,
+      rendercell: (params) => {
+        return <div className="productListItem">{params.row.cnic}</div>;
+      },
+    },
+
+    {
+      field: "Selling_id",
+      headerName: "Selling_id",
+      width: 160,
+      rendercell: (params) => {
         return (
-          <div className="userListUser">
-            <img className="userListImg" src={params.row.avatar} alt="" />
-            {params.row.username}
+          <div className="productListItem">
+            {params.row.Selling_id}
           </div>
         );
       },
     },
-    { field: "email", headerName: "Email", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 120,
+      field: "Full_name",
+      headerName: "Full_name",
+      width: 150,
+      rendercell: (params) => {
+        return (
+          <div className="productListItem">{params.row.Full_name}</div>
+        );
+      },
     },
     {
-      field: "transaction",
-      headerName: "Transaction Volume",
-      width: 160,
+      field: "Seller_email",
+      headerName: "Seller_email",
+      width: 170,
+      renderCell: (params) => {
+        return (
+          <div className="productListItem">{params.row.Seller_email}</div>
+        );
+      },
+    },
+    {
+      field: "Sold_property",
+      headerName: "Sold_property",
+      width: 190,
+      renderCell: (params) => {
+        return (
+          <div className="productListItem">{params.row.Sold_property}</div>
+        );
+      },
     },
     {
       field: "action",
@@ -45,12 +92,12 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/user/" + params.row.id}>
-              <button className="userListEdit">Edit</button>
+            <Link to={"/product/" + params.row.cnic}>
+              <button className="productListEdit">Edit</button>
             </Link>
             <DeleteOutline
-              className="userListDelete"
-              onClick={() => handleDelete(params.row.id)}
+              className="productListDelete"
+              onClick={() => handleDelete(params.row.cnic)}
             />
           </>
         );
@@ -59,11 +106,12 @@ export default function UserList() {
   ];
 
   return (
-    <div className="userList">
+    <div className="productList">
       <DataGrid
         rows={data}
         disableSelectionOnClick
         columns={columns}
+        getRowId={(row) => row.cnic}
         pageSize={8}
         checkboxSelection
       />
